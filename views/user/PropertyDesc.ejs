@@ -1,0 +1,331 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <%- include('../partials/headerFiles.ejs')%>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <title>Document</title>
+    <style>
+        .error{
+            color: red;
+        }
+
+        label{
+            color: black;
+        }
+    </style>
+</head>
+<body onload="Read()">
+<%- include('../partials/userHeader')%>
+
+
+<div id="PropertyData" class="modal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Update Property</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="UpdateProperty">
+
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="mb-3">
+                                <label class="form-label" for="Type">Property Type</label>
+                                <select required class="form-control" name="Type" id="Type">
+                                    <option class="form-control" value="">Please select property type</option>
+                                    <option class="form-control" value="Hotel">Hotel</option>
+                                    <option class="form-control" value="Villa">Villa</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="mb-3">
+                                <label for="price">Room Price</label>
+                                <input type="number" name="price" id="price" required class="form-control" placeholder="Price per day">
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="mb-3">
+                                <label for="offer">Offer Price</label>
+                                <input type="number" name="offer" id="offer" required class="form-control" placeholder="Your offer price">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="mb-3">
+                                <label for="city">City</label>
+                                <select required class="form-control" name="city" id="city">
+                                    <option class="form-control" value="">Please Select City</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="mb-3">
+                                <label for="airbnbName">Property Name</label>
+                                <input type="text" name="airbnbName" id="airbnbName" required class="form-control">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="mb-3">
+                                <label for="description">Description</label>
+                                <textarea type="text" name="description" id="description" required class="form-control" placeholder="Enter the description of the property"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="mb-3">
+                                <label for="address">Address</label>
+                                <textarea type="text" name="address" id="address" required class="form-control" placeholder="Enter Address of your property"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" onclick="Update()" class="btn btn-primary">Update</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<section class="page-title" style="background-image: url(/images/background/page-title-bg.png);">
+    <div class="auto-container">
+        <div class="title-outer text-center">
+            <h1 class="title">Property Description</h1>
+        </div>
+    </div>
+</section>
+
+<section id="property" class="product-details">
+</section>
+
+<section class="related-product">
+    <div class="container">
+        <h3>Property Images</h3>
+        <div id="roomImage" class="row clearfix">
+
+        </div>
+    </div>
+</section>
+
+<%- include('../partials/footer')%>
+
+<script>
+    async function Read(){
+        let response = await fetch("/get-all-propertyData/<%= prop_id %>")
+        response = await response.json()
+       // console.log(response)
+        if(response.error !== ""){
+            Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: (response.error),
+            });
+        }
+        else {
+            let html = ` `
+            let record = response.property[0]
+                html += `    <div class="container pb-70">
+        <div class="row">
+            <div class="col-lg-6 col-xl-6">
+                <div class="bxslider">
+                    <div class="slider-content">
+                        <figure class="image-box"><a href="${record.photo}" class="lightbox-image" data-fancybox="gallery"><img
+                                        src="${record.photo}" alt></a></figure>
+
+                    </div>
+
+                </div>
+            </div>
+            <div class="col-lg-6 col-xl-6 product-info">
+                <div class="product-details__top">
+                    <h3 class="product-details__title">${record.airBnbName} <span><i class="fa fa-rupee"></i><del>${record.price}</del></span><span><i class="fa fa-rupee"></i>${record.offer}</span><button onclick="EditProperty(${record.prop_id})"  class="theme-btn btn-style-one read-more offset-md-2">Edit Info</button></h3>
+                <h3 class="product-details__title"><span>${record.type}</span></h3></div>
+                <div class="product-details__reveiw">
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                </div>
+                <div class="product-details__content">
+                    <p class="product-details__content-text1">${record.description}</p>
+                    <p class="product-details__content-text2"><strong>Address : </strong>${record.address}</p>
+                    <p class="product-details__content-text2"><strong><li>Amenities : </li></strong></p>
+                    <p id="amenty" class="product-details__content-text2"></p>
+               </div>
+
+            </div>
+        </div>
+    </div>
+
+`
+
+            document.getElementById('property').innerHTML = html ;
+
+            html = ``
+            for(let x of response.amenity ){
+                html += ` ${x.amenity}<button onclick="DeleteAmenity(${x.amen_id})" class="btn btn-sm "><span style="color: red">X</span></button> ||`
+            }
+            document.getElementById('amenty').innerHTML = html ;
+            
+            html= ``
+            for (let y of response.room) {
+                html += `<div class="col-lg-3 ">
+                <figure class="image-box"><a href="${y.photo}" class="lightbox-image" data-fancybox="gallery"><img
+                     style="width: 200px;height: 200px"                   src="${y.photo}" alt></a></figure>
+<button onclick="DeleteImage(${y.room_id})" class="btn btn-sm btn-danger offset-md-4 mb-3"> X </button>
+            </div>`
+            }
+            document.getElementById('roomImage').innerHTML = html ;
+        }
+
+    }
+</script>
+
+<script>
+    async function DeleteImage(id){
+        if(confirm('are you sure ?')) {
+            let response = await fetch('/delete-property-image/' + id)
+            response = await response.json()
+            if (response.error !== "") {
+                Swal.fire({
+                    icon: "error",
+                    title: "Oops...",
+                    text: (response.error),
+                });
+            } else {
+                Swal.fire({
+                    icon: "success",
+                    title: "Good Job!",
+                    text: (response.message),
+                }).then(() => {
+                    Read()
+                })
+            }
+        }
+
+    }
+
+    async function DeleteAmenity(id){
+        if(confirm('are you sure ?')) {
+            let response = await fetch('/delete-property-amenity/' + id)
+            response = await response.json()
+            if (response.error !== "") {
+                Swal.fire({
+                    icon: "error",
+                    title: "Oops...",
+                    text: (response.error),
+                });
+            } else {
+                Swal.fire({
+                    icon: "success",
+                    title: "Good Job!",
+                    text: (response.message),
+                }).then(() => {
+                    Read()
+                })
+            }
+        }
+
+    }
+
+    async function EditProperty(id){
+        console.log(id)
+        let response = await fetch("/get-all-propertyData/" +  id)
+        response = await response.json()
+        // console.log(response)
+        if(response.error !== ""){
+            Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: (response.error),
+            });
+        }
+        else{
+           // console.log(response.city)
+            let data = response.property[0]
+            document.getElementById('Type').value = data.type
+            document.getElementById('city').value = response.city[0].city
+            document.getElementById('price').value = data.price
+            document.getElementById('offer').value = data.offer
+            document.getElementById('description').value = data.description
+            document.getElementById('address').value = data.address
+            document.getElementById('airbnbName').value = data.airBnbName
+            document.getElementById('airbnbName').disabled = true;
+            let res = await fetch('/read-city')
+            res = await res.json()
+            //console.log(response)
+            if(res.error !== ""){
+                Swal.fire({
+                    icon: "error",
+                    title: "Oops...",
+                    text: (res.error),
+                });
+            }
+            else {
+                let html = ``
+
+                for (let x of res.records) {
+
+                    html += ` <option value="${x.id}">${x.city}</option>`
+
+                }
+                document.getElementById('city').innerHTML = html ;
+                $("#PropertyData").modal('show')
+            }
+
+        }
+    }
+
+    async function Update(){
+        let form = document.getElementById('UpdateProperty')
+        let formData = new FormData(form)
+        let airbnbName = document.getElementById('airbnbName').value
+        formData.append('airbnbName',airbnbName)
+        if($("#UpdateProperty").valid()) {
+            let response = await fetch('/update-property/<%= prop_id%>', {
+                method: 'POST',
+                body: formData
+            })
+            response = await response.json()
+           // console.log(response)
+            if (response.error !== "") {
+                Swal.fire({
+                    icon: "error",
+                    title: "Oops...",
+                    text: (response.error),
+                });
+            } else {
+                Swal.fire({
+                    icon: "success",
+                    title: "Good Job!",
+                    text: (response.message),
+                }).then(() => {
+                    Read()
+                    $("#PropertyData").modal('hide')
+                })
+            }
+        }
+    }
+
+</script>
+</body>
+</html>

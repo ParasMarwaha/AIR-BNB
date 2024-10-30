@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <%- include('../partials/headerFiles.ejs')%>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <title>Document</title>
+    <style>
+        .error{
+            color: red;
+        }
+    </style>
+</head>
+<body onload="ReadCity()">
+<%- include('../partials/userHeader')%>
+<section class="page-title" style="background-image: url(images/background/page-title-bg.png);">
+    <div class="auto-container">
+        <div class="title-outer text-center">
+            <h1 class="title">Add Property</h1>
+        </div>
+    </div>
+</section>
+
+<section class="contact-details">
+    <div class="container ">
+        <div class="row">
+            <div class="col-lg-8 offset-md-2">
+                <div class="sec-title">
+                    <h2>Enter The Data</h2>
+                </div>
+
+                <form id="addProp" >
+
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="mb-3">
+                                <select required class="form-control" name="Type" id="Type">
+                                    <option class="form-control" value="">Please select property type</option>
+                                    <option class="form-control" value="Apartment">Apartment</option>
+                                    <option class="form-control" value="Villa">Villa</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="mb-3">
+                                <input type="file" name="photo" id="photo" required class="form-control" placeholder="Enter Your Email">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="mb-3">
+                                <input type="number" name="price" id="price" required class="form-control" placeholder="Price per day">
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="mb-3">
+                                <input type="number" name="offer" id="offer" required class="form-control" placeholder="Your offer price">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="mb-3">
+                                <select required class="form-control" name="city" id="city">
+                                    <option class="form-control" value="">Please Select City</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="mb-3">
+                                <input type="text" name="airbnbName" id="airbnbName" required class="form-control">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="mb-3">
+                                <textarea type="text" maxlength="225" name="description" id="description" required class="form-control" placeholder="Enter the description of the property"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="mb-3">
+                                <textarea type="text" name="address" id="address" required class="form-control" placeholder="Enter Address of your property"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button onclick="AddProperty()" type="button" class="btn btn-primary offset-md-5">Add Property</button>
+                </form>
+
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<%- include('../partials/footer')%>
+
+<script>
+    async function ReadCity(){
+        document.getElementById('airbnbName').value = "<%= AirName%>"
+        document.getElementById('airbnbName').disabled = true ;
+
+
+        let response = await fetch('/read-city')
+        response = await response.json()
+        //console.log(response)
+        if(response.error !== ""){
+            Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: (response.error),
+            });
+        }
+        else {
+            let html = `  <option value="">Please Select City</option>`
+
+            for (let x of response.records) {
+
+                html += ` <option value="${x.id}">${x.city}</option>`
+
+            }
+            document.getElementById('city').innerHTML = html ;
+        }
+    }
+
+    async function AddProperty(){
+
+        let form = document.getElementById('addProp')
+        let formData = new FormData(form)
+        let airbnbName = document.getElementById('airbnbName').value
+        formData.append('airbnbName',airbnbName)
+        if($("#addProp").valid()) {
+            let response = await fetch('/add-property', {
+                method: 'POST',
+                body: formData
+            })
+            response = await response.json()
+            console.log(response)
+            if (response.error !== "") {
+                Swal.fire({
+                    icon: "error",
+                    title: "Oops...",
+                    text: (response.error),
+                });
+            } else {
+                Swal.fire({
+                    icon: "success",
+                    title: "Good Job!",
+                    text: (response.message),
+                }).then(() => {
+                    document.getElementById('addProp').reset()
+                    document.getElementById('airbnbName').value = airbnbName
+                })
+            }
+        }
+    }
+</script>
+</body>
+</html>

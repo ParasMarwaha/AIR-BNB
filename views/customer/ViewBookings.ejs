@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="//cdn.datatables.net/2.0.8/css/dataTables.dataTables.min.css">
+
+    <%- include('../partials/headerFiles') %>
+
+
+    <title>Document</title>
+</head>
+<body onload="Booked()">
+
+<div class="page-wrapper">
+
+    <%- include('../partials/CustomerHeader') %>
+
+    <div class="preloader"></div>
+
+    <section class="page-title" style="background-image: url(/images/background/page-title-bg.png);">
+        <div class="auto-container">
+            <div class="title-outer text-center">
+                <h1 class="title">Bookings</h1>
+            </div>
+        </div>
+    </section>
+    <br><br>
+
+    <div class="container">
+
+        <table id="bookedDetails" class="table table-bordered table-dark table-hover">
+            <thead>
+            <tr>
+                <th>Sr No.</th>
+                <th>Property Name</th>
+                <th>Check-In Date</th>
+                <th>CheckOut Date</th>
+                <th>Days of Stay</th>
+                <th>Amount Paid</th>
+                <th>Property Description</th>
+            </tr>
+            </thead>
+            <tbody id="booked">
+
+            </tbody>
+        </table>
+
+    </div>
+
+    <%- include('../partials/footer') %>
+</div>
+
+
+<script>
+    async function Booked() {
+        let response = await fetch('/customer-booking')
+        response = await response.json()
+        //console.log(response)
+        if (response.error !== "") {
+            // console.log(response.error)
+            Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: (response.error),
+            });
+        } else {
+            // console.log(response.records)
+            let html = ``;
+            for (let i = 0; i < response.record.length; i++) {
+                let records = response.record[i];
+                //console.log(record)
+                html += `<tr >
+                         <td class="text-center">${i + 1}</td>
+                         <td class="text-center">${records.airBnbName}</td>
+<td class="text-center">${records.checkin.split("T")[0]}</td>
+                         <td class="text-center">${records.checkout.split("T")[0]}</td>
+                         <td class="text-center">${records.days}</td>
+                         <td class="text-center">${records.amount}</td>
+                         <td class="text-center"><a href="/desc/${records.prop_id}"><button type="button" class=" btn-sm btn btn-primary">Details</button></a></td>`
+            }
+
+            document.getElementById('booked').innerHTML = html;
+            let table = new DataTable('#bookedDetails');
+        }
+    }
+
+</script>
+</body>
+</html>

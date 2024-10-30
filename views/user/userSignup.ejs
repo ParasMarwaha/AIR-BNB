@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <%- include('../partials/headerFiles.ejs')%>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+    <title>Document</title>
+    <style>
+        .error
+        {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+<%- include('../partials/header.ejs')%>
+
+<section class="page-title" style="background-image: url(images/background/page-title-bg.png);">
+    <div class="auto-container">
+        <div class="title-outer text-center">
+            <h1 class="title">Sign-Up</h1>
+        </div>
+    </div>
+</section>
+
+<section class="contact-details">
+    <div class="container ">
+        <div class="row">
+            <div class="col-lg-8 offset-md-2">
+                <div class="sec-title">
+                    <h2>Register Here</h2>
+                </div>
+
+                <form id="signupform" >
+
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="mb-3">
+                                <input type="text" name="name" id="name" required class="form-control" placeholder="Enter Your Name">
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="mb-3">
+                                <input type="email" name="email" id="email" required class="form-control" placeholder="Enter Your Email">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="mb-3">
+                                <input type="password" name="password" id="password" required class="form-control" placeholder="Enter Password">
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="mb-3">
+                                <input type="password" name="confirmPass" id="confirmPass" required class="form-control" placeholder="Confirm Password">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="mb-3">
+                                <input type="text" name="city" id="city" required placeholder="Enter City" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="mb-3">
+                                <input type="tel" maxlength="10" name="phone" id="phone" required class="form-control" placeholder="Enter Your Contact Number">
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="mb-3">
+                                <input type="text" name="airName" id="airName" required class="form-control" placeholder="Enter Your Air BNB Name">
+                            </div>
+                        </div>
+                    </div>
+
+                    <button onclick="Signup()" type="button" class="btn btn-primary offset-md-5">Register</button>
+                </form>
+
+            </div>
+
+        </div>
+    </div>
+</section>
+
+
+<%- include('../partials/footer.ejs')%>
+<script>
+    async function Signup()
+    {
+        let form = document.getElementById('signupform')
+        let formData = new FormData(form)
+        if($("#signupform").valid()) {
+            let response = await fetch('/userSignup',{
+                method:'POST',
+                body:formData
+            })
+            response = await response.json()
+            if (response.error !== "") {
+                Swal.fire({
+                    icon: "error",
+                    title: response.error,
+                    showConfirmButton: true,
+                });
+            } else {
+                Swal.fire({
+                    title: "Good job!",
+                    text: (response.message),
+                    icon: "success"
+                }).then(()=>{
+                    document.getElementById('signupform').reset()
+                    window.location.href ='/userLogin'
+                })
+            }
+        }
+    }
+</script>
+</body>
+</html>
+

@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <%- include('../partials/headerFiles.ejs')%>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <title>Document</title>
+    <style>
+        .error{
+            color: red;
+        }
+    </style>
+</head>
+<body onload="Read()">
+<%- include('../partials/userHeader')%>
+
+<div id="RoomPhoto" class="modal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add Photos</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="photo">
+                    <input name="id" type="hidden" id="id">
+                    <input name="roomImg" id="roomImg" required type="file" class="form-control">
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" onclick="AddPhoto()" class="btn btn-primary">Add</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="AmenityData" class="modal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Choose Amenity</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="AddAmenity">
+                    <input type="hidden" id="Id">
+                    <select class="form-control" name="amenity" id="amenity">
+                        <option value="">Please Select Amenity</option>
+                        <option value="Free Wifi">Free Wifi</option>
+                        <option value="Free Parking">Free Parking</option>
+                        <option value="Free Breakfast">Free Breakfast</option>
+                        <option value="Swimming Pool">Swimming Pool</option>
+                        <option value="Fitness Center">Fitness Center</option>
+                        <option value="Spa Services">Spa Services</option>
+                        <option value="Pet-Friendly">Pet-Friendly</option>
+                        <option value="AIRPORT SHUTTLE">Airport Shuttle</option>
+                        <option value="On-site Restaurant">On-site Restaurant</option>
+                        <option value="Bar">Bar</option>
+                        <option value="LAUNDRY">Laundry Service</option>
+                        <option value="ROOM_SERVICE">Room Service</option>
+                        <option value="CONFERENCE_ROOM">Conference Room</option>
+                        <option value="BUSINESS CENTER">Business Center</option>
+                        <option value="CONCIERGE">Concierge Service</option>
+                        <option value="KIDS CLUB">Kids Club</option>
+                    </select>
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" onclick="AddAmenity()" class="btn btn-primary">Add</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<section class="page-title" style="background-image: url(/images/background/page-title-bg.png);">
+    <div class="auto-container">
+        <div class="title-outer text-center">
+            <h1 class="title">View Added Properties</h1>
+        </div>
+    </div>
+</section>
+
+<section id="properties" class="feature-section">
+
+</section>
+<%- include('../partials/footer')%>
+
+<script>
+   async function Read(){
+        let response = await fetch('/read-property')
+       response = await response.json()
+       //console.log(response.records)
+       if(response.error !== ""){
+           Swal.fire({
+               icon: "error",
+               title: "Oops...",
+               text: (response.error),
+           });
+       }
+       else {
+           let html = ``
+
+           for (let x of response.records) {
+
+               html += `      <div class="auto-container">
+        <div class="row feature-row g-0 wow slideInUp" data-wow-delay="100ms">
+            <div class="image-column col-lg-4 col-md-12 col-sm-12">
+                <div class="inner-column">
+                    <div class="image-box">
+                        <figure class="image overlay-anim"><img src="${x.photo}" alt></figure>
+                    </div>
+                </div>
+            </div>
+            <div class="content-column col-lg-8 col-md-12 col-sm-12">
+                <div class="inner-column">
+                    <div class="content-box">
+                        <div class="sec-title">
+                            <h2><a href='/property-desc/${x.prop_id}'>${x.airBnbName}</a></h2>
+                            <div class="text">
+                            <span class="sub-title">Address</span>
+                                <div>
+                                    ${x.address}
+                                </div>
+                            </div>
+                        </div>
+
+                        <button onclick="Add(${x.prop_id})"  class="theme-btn btn-style-one read-more">Add Photos</button>
+                        <button onclick="Delete(${x.prop_id})"  class=" mb-8 theme-btn btn-style-one read-more">Delete Property</button>
+                        <button onclick="Amenity(${x.prop_id})"  class=" mb-8 theme-btn btn-style-one read-more">Amenities</button>
+                    </div>
+                </div>
+            </div>
+</div>
+        </div>
+`
+           }
+           document.getElementById('properties').innerHTML = html ;
+       }
+    }
+
+    async function Delete(id){
+       if(confirm('are you sure ?')) {
+           let response = await fetch('/delete-property/' + id)
+           response = await response.json()
+           if (response.error !== "") {
+               Swal.fire({
+                   icon: "error",
+                   title: "Oops...",
+                   text: (response.error),
+               });
+           } else {
+               Swal.fire({
+                   icon: "success",
+                   title: "Good Job!",
+                   text: (response.message),
+               }).then(() => {
+                   Read()
+               })
+           }
+       }
+    }
+
+    async function Add(id){
+       document.getElementById('id').value = id
+       $('#RoomPhoto').modal('show')
+    }
+
+   async function AddPhoto() {
+       let form = document.getElementById('photo')
+       let formData = new FormData(form)
+
+       if ($("#photo").valid()) {
+           let response = await fetch('/add-room-photos', {
+               method: 'POST',
+               body: formData
+           });
+
+           response = await response.json();
+
+           if (response.error !== "") {
+               Swal.fire({
+                   icon: "error",
+                   title: "Oops...",
+                   text: response.error,
+               });
+           } else {
+               Swal.fire({
+                   icon: "success",
+                   title: "Good Job!",
+                   text: response.message,
+               }).then(() => {
+                   document.getElementById('photo').reset()
+                   $('#RoomPhoto').modal('hide');
+               });
+           }
+       }
+   }
+
+   async function Amenity(id){
+       document.getElementById('Id').value  = id
+       $('#AmenityData').modal('show')
+   }
+
+   async function AddAmenity(){
+       let id = document.getElementById('Id').value
+       let amenity = document.getElementById('amenity').value
+
+       let response = await fetch('/add-amenity',{
+           method:'POST',
+           headers:{'Content-Type':'application/json'},
+           body:JSON.stringify({id:id,amenity:amenity})
+       })
+       response = await response.json()
+       console.log(response)
+       if (response.error !== "") {
+           Swal.fire({
+               icon: "error",
+               title: "Oops...",
+               text: response.error,
+           }).then(()=>{
+               document.getElementById('AddAmenity').reset()
+
+           })
+       } else {
+           Swal.fire({
+               icon: "success",
+               title: "Good Job!",
+               text: response.message,
+           }).then(() => {
+               document.getElementById('AddAmenity').reset()
+               $('#AmenityData').modal('hide');
+           });
+       }
+   }
+
+
+</script>
+</body>
+</html>

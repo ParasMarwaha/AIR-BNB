@@ -1,0 +1,294 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <%- include('../partials/HeaderFiles.ejs')%>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="//cdn.datatables.net/2.0.8/css/dataTables.dataTables.min.css">
+
+
+
+    <title>Document</title>
+    <style>
+        .error{
+            color: red;
+        }
+    </style>
+</head>
+<body onload="Read()">
+
+<div id="EditCity" class="modal " tabindex="-1">
+    <div class="modal-dialog ">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Update City</h5>
+            </div>
+            <div class="modal-body">
+                <form id="EditForm" >
+                    <input type="hidden" id="city_id">
+
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="mb-3">
+                                <select required class="form-control" name="Editstate" id="Editstate">
+                                    <option class="form-control" value="">Please select state</option>
+                                    <option class="form-control" value="punjab">Punjab</option>
+                                    <option class="form-control" value="delhi">Delhi</option>
+                                    <option class="form-control" value="mumbai">Mumbai</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="mb-3">
+                                <input required id="Editcity" name="Editcity" class="form-control" type="text" placeholder="Enter City Name">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="mb-3">
+                                <input required id="Editpincode" name="Editpincode" class="form-control" type="number" placeholder="Enter Pincode">
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" onclick="CloseModal()" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" onclick="UpdateCity()" class="btn btn-primary">Update</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="page-wrapper">
+    <div class="preloader"></div>
+
+    <%- include('../partials/adminHeader.ejs')%>
+
+    <section class="page-title" style="background-image: url(images/background/page-title-bg.png);">
+        <div class="auto-container">
+            <div class="title-outer text-center">
+                <h1 class="title">Add City</h1>
+            </div>
+        </div>
+    </section>
+
+    <section class="contact-details">
+        <div class="container ">
+            <div class="row">
+                <div class="col-lg-6 offset-md-3">
+                    <div class="sec-title">
+                        <h2>Add new city</h2>
+                    </div>
+
+                    <form id="contact_form" >
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="mb-3">
+                                    <select required class="form-control" name="state" id="state">
+                                        <option class="form-control" value="">Please select state</option>
+                                        <option class="form-control" value="punjab">Punjab</option>
+                                        <option class="form-control" value="delhi">Delhi</option>
+                                        <option class="form-control" value="mumbai">Mumbai</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="mb-3">
+                                    <input required id="city" name="city" class="form-control" type="text" placeholder="Enter City Name">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="mb-3">
+                                    <input required id="pincode" name="pincode" class="form-control" type="number" placeholder="Enter Pincode">
+                                </div>
+                            </div>
+                        </div>
+                        <button onclick="Submit()" type="button" class="btn btn-primary offset-md-5">Submit</button>
+                    </form>
+
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+
+    <div class="container">
+        <div class="row">
+            <table class="table table-dark table-hover table-bordered" id="CityTable">
+                <thead>
+                <tr>
+                    <th class="text-center">Sr No.</th>
+                    <th class="text-center">State</th>
+                    <th class="text-center">City</th>
+                    <th class="text-center">Pincode</th>
+                    <th class="text-center">Edit</th>
+                    <th class="text-center">Delete</th>
+                </tr>
+                </thead>
+                <tbody id="CityRead"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <%- include('../partials/footer.ejs')%>
+</div>
+
+<script>
+    async function Submit() {
+        let form = document.getElementById('contact_form')
+        let formData = new FormData(form)
+
+        if ($("#contact_form").valid()) {
+            let response = await fetch('/add-city', {
+                method: 'POST',
+                body: formData
+            })
+            response = await response.json()
+           // console.log(response)
+            if (response.error !== "") {
+                Swal.fire({
+                    icon: "error",
+                    title: response.error,
+                    showConfirmButton: true,
+                });
+            } else {
+                Swal.fire({
+                    title: "Good job!",
+                    text: (response.message),
+                    icon: "success"
+                }).then(()=>{
+                    document.getElementById('contact_form').reset()
+                })
+            }
+
+        }
+    }
+let product ;
+    async function Read(){
+        let response = await fetch('/read-city')
+        response = await response.json()
+        if (response.error !== "") {
+            // console.log(response.error)
+            Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: (response.error),
+            });
+        }
+        else {
+             product = response.records
+            // console.log(response.records)
+            let html = ``;
+            for (let i = 0; i < response.records.length; i++) {
+                let record = response.records[i];
+                //console.log(record)
+                html += `<tr >
+                         <td class="text-center">${i + 1}</td>
+                         <td class="text-center">${record.state}</td>
+                         <td class="text-center">${record.city}</td>
+                         <td class="text-center">${record.pincode}</td>
+                         <td class="text-center"><button onclick="Edit(${record.id})" type="button" class="btn btn-primary btn-sm">Edit</button></td>
+                         <td class="text-center"><button onclick="Delete(${record.id})" type="button" class="btn btn-danger btn-sm">Delete</button></td>`
+            }
+            document.getElementById('CityRead').innerHTML = html;
+
+            let table = new DataTable('#CityTable');
+        }
+
+    }
+
+    async function Edit(id){
+        //console.log(id)
+        let dataFilter = product.filter((x) => x.id === id)
+
+        document.getElementById('city_id').value = dataFilter[0].id
+        document.getElementById('Editstate').value = dataFilter[0].state
+        document.getElementById('Editcity').value = dataFilter[0].city
+        document.getElementById('Editpincode').value = dataFilter[0].pincode
+
+        $('#EditCity').modal('show')
+    }
+
+    async function CloseModal(){
+        //console.log(id)
+        $('#EditCity').modal('hide')
+
+    }
+
+    async function UpdateCity(){
+        //console.log(id)
+      let id =  document.getElementById('city_id').value
+      let state =  document.getElementById('Editstate').value
+      let city =  document.getElementById('Editcity').value
+      let pincode =  document.getElementById('Editpincode').value
+
+        let response = await fetch('/UpdateCity',{
+            method:'POST',
+            headers:{'Content-Type':'application/json'},
+            body:JSON.stringify({id:id,state:state,city:city,pincode:pincode})
+        })
+        response = await response.json()
+        if (response.error !== "") {
+            Swal.fire({
+                icon: "error",
+                title: response.error,
+                showConfirmButton: true,
+            });
+        } else {
+            Swal.fire({
+                title: "Good job!",
+                text: (response.message),
+                icon: "success"
+            }).then(()=>{
+                Read()
+                CloseModal()
+            })
+        }
+    }
+
+    async function Delete(id){
+        //console.log(id)
+        if(confirm('Are You Sure?')){
+            let response = await fetch('/delete-city/' + id)
+            response = await response.json()
+            if (response.error !== "") {
+                Swal.fire({
+                    icon: "error",
+                    title: response.error,
+                    showConfirmButton: true,
+                });
+            } else {
+                Swal.fire({
+                    title: "Good job!",
+                    text: (response.message),
+                    icon: "success"
+                }).then(()=>{
+                    Read()
+                })
+            }
+        }
+
+    }
+
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,201 @@
+:root {
+  --dark-color1: #171717;
+  --dark-color2: #222020;
+  --dark-color3: #2b242b;
+}
+
+.bg-dark-1 {
+  background-color: var(--dark-color1) !important;
+}
+
+.bg-dark-2 {
+  background-color: var(--dark-color2) !important;
+}
+
+.bg-dark-3 {
+  background-color: var(--dark-color3) !important;
+}
+
+body,
+.page-wrapper,
+.sticky-header,
+.header-style-one,
+.header-style-two .header-lower .logo-box:before,
+.checkout-form-section .checkout-form,
+.service-block .inner-box,
+.pricing-section,
+.booking-form-column .inner-column .bk-form .frm-field input,
+.booking-form-column .inner-column .bk-form .frm-field select,
+.news-block .inner-box .content-box .read-more,
+.header-style-two .main-box,
+.client-block .inner-box,
+.offer-banner .outer-box .btn-column .inner-column .read-more,
+.news-block-two .inner-box .content-box .btn-box .read-more,
+.pricing-block-two .inner-box .content-column .inner-column::before,
+.service-section-two,
+.service-block-two .inner-box .image-box .icon-box::before,
+.overlay-anim:before {
+  background-color: var(--dark-color1);
+}
+
+.testimonial-block-four .inner-box .info-box .icon {
+  color: var(--dark-color1);
+}
+
+a {
+  color: inherit;
+}
+
+.header-style-one .header-lower .logo-box:before,
+.header-style-one .main-box .btn-box:before,
+.header-style-four .header-top,
+.rooms-section,
+.service-block .inner-box::before,
+.feature-row .content-column .inner-column,
+.about-section .image-column .btn-box .play-now-two,
+.testimonial-column .inner-column .testimonial-slide .content-box .image-box .thumb::before,
+.team-block .info-box,
+.booking-form-column .inner-column:before,
+.news-block .inner-box .content-box,
+.header-style-one .outer-box .header-btn,
+.checkout-form-section .checkout-form .btn-style-one,
+.about-section .content-column .btn-box .theme-btn,
+.about-section .image-column .image-1::after,
+.about-section-two .content-column .inner-column .btn-box .theme-btn,
+.call-to-action .content-colum .inner-column .call-block .inner-box .icon-box,
+.client-block .inner-box:before,
+.news-block-two .inner-box .content-box,
+.pricing-block-two .inner-box .content-column .inner-column,
+.service-block-two .inner-box {
+  background-color: var(--dark-color2);
+}
+
+.btn-style-one,
+.offer-banner .outer-box {
+  background-color: var(--dark-color3);
+}
+
+.about-section .content-column .info-box {
+  border-bottom: 1px solid var(--dark-color2);
+}
+
+.btn-style-three,
+.work-tabs .tab-buttons .tab-btn {
+  background-color: #000;
+}
+
+.service-block-two .inner-box .hover-content .icon,
+.about-section-two .content-column .float-text {
+  color: #3a3a3a;
+}
+
+.blockquote-one {
+  color: #8d8d8d;
+}
+
+.sticky-header .mobile-nav-toggler,
+.sticky-header .main-menu .navigation > li > a,
+.sticky-header .main-menu .navigation > li.current > a,
+.sticky-header .main-menu .navigation > li:hover > a,
+.main-header .info-btn small,
+.main-menu .navigation > li > a,
+.header-style-two .main-menu .navigation > li > a,
+.list-style-one li,
+.main-header .ui-btn,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+strong,
+.title a,
+.checkout-form-section .checkout-form .checkout-field > h6,
+.sec-title h2,
+.info-block .icon-box i,
+.pricing-block .inner-box .content-box .title span,
+.booking-form-column .inner-column .bk-form .frm-field select,
+.news-block .inner-box .content-box .read-more,
+.header-style-two .mobile-nav-toggler,
+.news-block-two .inner-box .content-box .btn-box .read-more {
+  color: #fff;
+}
+
+.btn-style-one,
+.about-section .image-column .image-2,
+.service-block .inner-box,
+.video-section .btn-column .inner-column .play-now-two,
+.about-section .image-column .btn-box:before,
+.testimonial-slider .slick-dots li.slick-active,
+.booking-form-column .inner-column .bk-form .frm-field input,
+.booking-form-column .inner-column .bk-form .frm-field select,
+.checkout-form-section .checkout-form .checkout-field,
+.banner-section .content-box .btn,
+.banner-section-two .banner-slider .content-box .btn,
+.banner-section-two .slick-dots li.slick-active button,
+.news-block-two .inner-box .content-box .btn-box {
+  border-color: #2c2a2a;
+}
+
+.feature-block .count {
+  -webkit-text-stroke-color: #fff;
+}
+
+.counter-block-two .count-box {
+  -webkit-text-stroke-color: var(--bg-theme-color2);
+}
+
+.header-style-two {
+  background-color: unset;
+}
+
+.banner-section-two .bottom-box:before,
+.contact-section:before {
+  opacity: 0.1;
+}
+
+.header-style-two .outer-box .search-btn img {
+  -webkit-filter: brightness(0) invert(1);
+          filter: brightness(0) invert(1);
+}
+
+.news-section-two::before {
+  background-image: url(../images/resource/pattern-4-dark.jpg);
+}
+
+.contact-form .form-group textarea {
+  background-color: #0a090f;
+}
+.contact-form .form-group input:not([type=submit]) {
+  background-color: #0a090f;
+}
+
+.newsletter-form-three .form-group input[type=text],
+.newsletter-form-three .form-group input[type=email] {
+  background-color: rgba(22, 36, 62, 0.7);
+}
+
+.client-block.dark-style img,
+.about-section-seven .content-column .bottom-box .auther-info .image {
+  display: inline-block !important;
+  width: auto !important;
+  -webkit-transition: all 0.3s ease;
+  transition: all 0.3s ease;
+  background: unset;
+  -webkit-filter: brightness(0) invert(1);
+  filter: brightness(0) invert(1);
+  opacity: 0.4;
+}
+
+.team-block .inner-box:after {
+  display: none;
+}
+
+.banner-section-twelve .gradient-overlay:before {
+  background: linear-gradient(90.22deg, var(--dark-color1) 0.19%, rgba(22, 36, 62, 0) 99.81%);
+}
+
+.header-style-one {
+  margin-top: 0;
+  padding-top: 18px;
+}

@@ -1,0 +1,365 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <%- include('../partials/headerFiles.ejs') %>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <title>Document</title>
+</head>
+<body onload="Read()">
+<%- include('../partials/CustomerHeader') %>
+
+<div id="Review-Property" class="modal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Give Review</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="Review-Form">
+                    <input type="hidden" id="property_id">
+                    <label class="form-label" for="rating">Rating</label>
+                    <select class="form-control" name="rating" id="rating">
+                        <option value="">Please select rating</option>
+                        <option value="1">1 star</option>
+                        <option value="2">2 star</option>
+                        <option value="3">3 star</option>
+                        <option value="4">4 star</option>
+                        <option value="5">5 star</option>
+                    </select>
+
+                    <label class="form-label" for="feedback">Feedback</label>
+                    <textarea class="form-control" name="feedback" id="feedback" cols="5"  placeholder="please enter feedback"></textarea>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" onclick="Upload()" class="btn btn-primary">Upload</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="Update-Review-Property" class="modal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Your Review</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="UpdateReview-Form">
+                    <input type="hidden" id="apart_id">
+                    <label class="form-label" for="Rating">Rating</label>
+                    <select class="form-control" name="Rating" id="Rating">
+                        <option value="">Please select rating</option>
+                        <option value="1">1 star</option>
+                        <option value="2">2 star</option>
+                        <option value="3">3 star</option>
+                        <option value="4">4 star</option>
+                        <option value="5">5 star</option>
+                    </select>
+
+                    <label class="form-label" for="Feedback">Feedback</label>
+                    <textarea class="form-control" name="Feedback" id="Feedback" cols="5"  placeholder="please enter feedback"></textarea>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" onclick="Update()" class="btn btn-primary">Update</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<section class="page-title" style="background-image: url(/images/background/page-title-bg.png);">
+    <div class="auto-container">
+        <div class="title-outer text-center">
+            <h1 class="title">Property Description</h1>
+        </div>
+    </div>
+</section>
+
+
+<section id="property" class="product-details">
+</section>
+
+
+<div class="container">
+    <div class="row">
+        <div class="room-details__left">
+            <div class="wrapper">
+                <div class="row justify-content-center">
+                    <div class="col-xl-12">
+                        <div class="room-details__content-right mb-40 mt-20">
+                            <div class="room-details__details-box">
+                                <div class="row">
+                                    <div class="col-6 col-md-3">
+                                        <p class="text mb-0">Room Size</p>
+                                        <h6>600Sq</h6>
+                                    </div>
+                                    <div class="col-6 col-md-3">
+                                        <p class="text mb-0">Rooms Bed</p>
+                                        <h6>2 Single Bed</h6>
+                                    </div>
+                                    <div class="col-6 col-md-3">
+                                        <p class="text mb-0">Occupancy</p>
+                                        <h6>Three Persons</h6>
+                                    </div>
+                                    <div class="col-6 col-md-3">
+                                        <p class="text mb-0">View</p>
+                                        <h6>Sea View</h6>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <h4>Amenities</h4>
+                <div id="Amenity" class="row room-facility-list mb-40">
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+
+<div class="container">
+    <h3>Property Images</h3>
+    <div id="roomImage" class="row clearfix">
+
+    </div>
+</div>
+
+<section class="client-section pb-90">
+    <div class="bg bg-image" style="background-image: url(/images/background/3.jpg);"></div>
+    <div class="auto-container">
+        <div class="sec-title light text-center"> <span class="sub-title">What says for customer</span>
+            <h2>What Client's Say?</h2>
+        </div>
+        <div id="user-review" class="row">
+
+        </div>
+    </div>
+</section>
+
+<%- include('../partials/footer') %>
+
+<script>
+    let hotel ;
+    async function Read() {
+        let response = await fetch("/get-all-propertyData/<%= prop_id %>")
+        response = await response.json()
+         //console.log(response)
+        if (response.error !== "") {
+            Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: (response.error),
+            });
+        } else {
+            hotel = response.property[0]
+            let html = ` `
+            let record = response.property[0]
+            html += `    <div class="container pb-70">
+        <div class="row">
+            <div class="col-lg-6 col-xl-6">
+                <div class="bxslider">
+                    <div class="slider-content">
+                        <figure class="image-box"><a href="${record.photo}" class="lightbox-image" data-fancybox="gallery"><img
+                                        src="${record.photo}" alt></a></figure>
+
+                    </div>
+
+                </div>
+            </div>
+            <div class="col-lg-6 col-xl-6 product-info">
+                <div class="product-details__top">
+                    <h3 class="product-details__title">${record.airBnbName} <span>${record.type}</span><button onclick="Review(${record.prop_id})"  class="theme-btn btn-style-one read-more offset-md-2">Review</button></h3><br>
+<h3><span class="m-3 color1"><i class="fa fa-rupee"></i><del>${record.price}</del></span><span><i class="fa fa-rupee m-2"></i>${record.offer}</span></h3>
+                </div>
+                <div class="product-details__reveiw">
+                    <i id="star-avg" class="fa fa-star"></i>
+                </div>
+                <div class="product-details__content">
+                    <p class="product-details__content-text1">${record.description}</p>
+                    <p class="product-details__content-text2"><strong>Address : </strong>${record.address}</p>
+
+               </div>
+
+            </div>
+        </div>
+    </div>
+
+`
+
+            document.getElementById('property').innerHTML = html;
+
+            html = ``
+            for (let x of response.amenity) {
+                html += `<div class="col-sm-6 col-xl-4">
+                            <div class="list-one d-flex align-items-center me-sm-4 mb-3">
+                                <div class="icon text-theme-color1 mr-10 flex-shrink-0"><i
+                                            class="far fa-air-conditioner"></i></div>
+                                <h6 class="title m-0">${x.amenity}</h6>
+                            </div>
+                        </div>`
+            }
+            document.getElementById('Amenity').innerHTML = html;
+
+            html = ``
+            for (let y of response.room) {
+                html += `<div class="col-lg-3 ">
+                <figure class="image-box"><a href="${y.photo}" class="lightbox-image" data-fancybox="gallery"><img
+                     style="width: 200px;height: 200px"                   src="${y.photo}" alt></a></figure>
+            </div>`
+            }
+            document.getElementById('roomImage').innerHTML = html;
+
+            html = ``
+            for (let y of response.review) {
+                html += `<div class="client-block col-lg-4 col-sm-6">
+                <div class="inner-box wow fadeInLeft">
+                    <h4 class="title">${y.name}</h4>
+                    <div class="image-box">
+                        ${generateStars(y.rating)}
+                    </div>
+                    <div class="text">${y.feedback}</div>
+                </div>
+            </div>`
+            }
+            document.getElementById('user-review').innerHTML = html;
+
+
+            let x = response.avgReview[0]
+           // console.log(x.average_rating)
+            html=``
+            if(x.average_rating === null){
+                html = `5 star `
+                document.getElementById('star-avg').innerHTML = html;
+            }
+            else{
+                html = `/${x.average_rating} star`
+                document.getElementById('star-avg').innerHTML = html;
+            }
+        }
+
+    }
+
+    function generateStars(rating) {
+        let stars = '';
+        for (let i = 0; i < 5; i++) {
+            if (i < rating) {
+                stars += '<i class="fa fa-star"></i>'; // filled star
+            } else {
+                stars += '<i class="fa fa-star-o"></i>'; // empty star
+            }
+        }
+        return stars;
+    }
+
+    async function Review(id){
+        //console.log(id)
+        let response = await fetch('/get-review/'+id)
+        response =await response.json()
+        //console.log(response)
+        if (response.error === "OpenUpdate") {
+            document.getElementById('Rating').value= response.record[0].rating
+            document.getElementById('Feedback').value= response.record[0].feedback
+            document.getElementById('apart_id').value= response.record[0].prop_id
+            $("#Update-Review-Property").modal('show')
+        }
+        else if(response.error !== ""){
+            Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: (response.error),
+            });
+        }
+        else {
+            document.getElementById('property_id').value = id
+            $("#Review-Property").modal('show')
+        }
+
+    }
+
+    async function Upload(){
+        let prop_id = document.getElementById('property_id').value
+       // console.log(prop_id)
+        let form = document.getElementById('Review-Form')
+        let formData = new FormData(form)
+        formData.append("prop_id",prop_id)
+        let response = await fetch ('/upload-review',{
+            method:'POST',
+            body:formData
+        })
+        response = await response.json()
+        //console.log(response)
+        if (response.error !== "") {
+            Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: (response.error),
+            });
+        }
+        else{
+            Swal.fire({
+                icon: "success",
+                title: "Good Job!",
+                text: (response.message),
+            }).then(()=>{
+                $("#Review-Property").modal('hide')
+
+                Read()
+            })
+        }
+    }
+
+    async function Update(){
+        let prop_id = document.getElementById('apart_id').value
+        // console.log(prop_id)
+        let form = document.getElementById('UpdateReview-Form')
+        let formData = new FormData(form)
+        formData.append("prop_id",prop_id)
+        let response = await fetch ('/update-review',{
+            method:'POST',
+            body:formData
+        })
+        response = await response.json()
+        if (response.error !== "") {
+            Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: (response.error),
+            });
+        }
+        else{
+            Swal.fire({
+                icon: "success",
+                title: "Good Job!",
+                text: (response.message),
+            }).then(()=>{
+                $("#Update-Review-Property").modal('hide')
+                Read()
+
+            })
+        }
+    }
+
+</script>
+
+</body>
+</html>

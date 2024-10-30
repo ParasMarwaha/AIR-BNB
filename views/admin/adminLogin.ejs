@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Hoexr | Hotel HTML Template | Home Page 01</title>
+    <%- include('../partials/headerFiles.ejs')%>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<style>
+    .error
+    {
+        color:red
+    }
+</style>
+</head>
+<body>
+
+<section class="contact-details">
+    <div class="container ">
+        <div class="row">
+            <div class="col-lg-6 offset-md-3">
+                <div class="sec-title">
+                    <h2>Admin Login</h2>
+                </div>
+            <form id="AdminForm">
+
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="mb-3">
+                            <input type="email" name="email" id="email" required class="form-control" placeholder="Enter Your Email">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="mb-3">
+                            <input type="password" name="password" id="password" required class="form-control" placeholder="Enter Password">
+                        </div>
+                    </div>
+                </div>
+                <a href="/adminForgotPassword">Forgot Password</a>
+            </form>
+            <button onclick="login()" type="button" class="btn btn-primary offset-md-5">Login</button>
+            </div>
+
+        </div>
+    </div>
+</section>
+<script src="/js/jquery.min.js"></script>
+<script src="/js/popper.min.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/slick.min.js"></script>
+<script src="/js/slick-animation.min.js"></script>
+<script src="/js/jquery.fancybox.js"></script>
+<script src="/js/wow.js"></script>
+<script src="/js/appear.js"></script>
+<script src="/js/flatpickr.js"></script>
+<script src="/js/swiper.min.js"></script>
+<script src="/js/script.js"></script>
+<script src="/js/jquery.validate.min.js"></script>
+
+
+<script>
+    async function login() {
+
+           let form = document.getElementById('AdminForm')
+           let formData = new FormData(form)
+
+        if ($("#AdminForm").valid()) {
+            let response = await fetch('/adminLogin', {
+                method: 'POST',
+                body: formData
+            })
+            response = await response.json()
+            // console.log(response)
+            if (response.error !== "") {
+                Swal.fire({
+                    icon: "error",
+                    title: response.error,
+                    showConfirmButton: true,
+                });
+            } else {
+                Swal.fire({
+                    title: "Good job!",
+                    text: (response.message),
+                    icon: "success"
+                }).then(()=>{
+                    window.location.href = '/adminDashboard'
+                })
+            }
+
+        }
+    }
+</script>
+</body>
+</html>

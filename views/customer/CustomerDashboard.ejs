@@ -1,0 +1,416 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Hoexr | Hotel HTML Template | Home Page 01</title>
+    <%- include('../partials/headerFiles.ejs')%>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+</head>
+<style>
+    .error{
+        color: red;
+    }
+
+    .checkout-form-section {
+        border: 2px solid #ddd; /* Border */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Shadow */
+    }
+
+    label{
+        color: black;
+    }
+</style>
+<body onload="ReadCity()">
+
+<div class="page-wrapper">
+    <%- include('../partials/CustomerHeader.ejs')%>
+
+    <section class="banner-section">
+
+        <div class="banner-slider">
+            <div class="banner-slide">
+                <figure class="image"><img src="/images/banner/banner-1.jpg" alt></figure>
+                <div class="content-box">
+                    <span class="sub-title" data-animation-in="fadeInUp" data-delay-in="0.1">Unique Villa And Apartments</span>
+                    <h1 data-animation-in="fadeInUp" data-delay-in="0.3">life enjoy with <br>the great moments</h1>
+                </div>
+            </div>
+            <div class="banner-slide">
+                <figure class="image wow fadeInUp"><img src="/images/banner/banner-1.jpg" alt></figure>
+                <div class="content-box">
+                    <span class="sub-title" data-animation-in="fadeInUp" data-delay-in="0.1">Unique Villa And Apartments</span>
+                    <h1 data-animation-in="fadeInUp" data-delay-in="0.3">life enjoy with <br>the great moments</h1>
+                </div>
+            </div>
+            <div class="banner-slide">
+                <figure class="image wow fadeInUp"><img src="/images/banner/banner-1.jpg" alt></figure>
+                <div class="content-box">
+                    <span class="sub-title" data-animation-in="fadeInUp" data-delay-in="0.1">Unique Villa And Apartments</span>
+                    <h1 data-animation-in="fadeInUp" data-delay-in="0.3">life enjoy with <br>the great moments</h1>
+                </div>
+            </div>
+        </div>
+
+        <div class="checkout-form-section wow slideInUp">
+
+            <form id="dateForm" class="checkout-form">
+                    <div class="checkout-form">
+                        <div class="checkout-field">
+                            <div class="chk-field">
+                                <label class="form-label" for="checkin">Check in</label><br>
+                                <input required id="checkin" class="form-control border-dark" type="date" name="checkin" placeholder="Select check-in date">
+                            </div>
+                        </div>
+
+                        <div class="checkout-field">
+
+                            <div class="chk-field">
+                                <label class="form-label" for="checkout">Check out</label><br>
+                                <input required class="form-control border-dark" id="checkout" type="date" name="checkout" placeholder="Select check-out date">
+                            </div>
+                        </div>
+
+                        <div class="checkout-field">
+                            <div class="chk-field">
+                                <label class="form-label" for="city">City</label>
+                                <select required class="form-control border-dark" name="city" id="city">
+                                    <option class="form-control" value="">Please Select City</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="checkout-field">
+                            <div class="chk-field">
+                                <label class="form-label" for="Type">Property Type</label>
+                                <select required class="form-control border-dark" name="Type" id="Type">
+                                    <option class="form-control" value="">Please select property type</option>
+                                    <option class="form-control" value="Apartment">Apartment</option>
+                                    <option class="form-control" value="Villa">Villa</option>
+                                </select>
+                            </div>
+                        </div>
+
+
+                        <button type="button" onclick="Search()" class="theme-btn btn-style-one"><span class="btn-title">check now</span></button>
+                    </div>
+
+                </form>
+
+        </div>
+
+    </section>
+
+    <section class="about-section">
+        <div class="auto-container">
+            <div class="row">
+
+                <div class="content-column col-xl-6 col-lg-6 order-lg-2 wow fadeInRight" data-wow-delay="600ms">
+                    <div class="inner-column">
+                        <div class="sec-title">
+                            <span class="sub-title">Hoexr Luxury Rooms</span>
+                            <h2>Most Safe & Rated <br>Apartment and Villa Bookings</h2>
+                            <div class="text">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do <br>tempor
+                                incididunt ut labore et dolore magna aliqua. Quis ipsum <br>suspendisse ultrices
+                                gravida. Risus commodo maecenas accumsan<br> lacus vel facilisis.
+                            </div>
+                        </div>
+                        <div class="outer-box">
+                            <div class="info-block">
+                                <div class="inner">
+                                    <div class="icon-box"><i class="flaticon-light"></i></div>
+                                    <h4 class="title">The Best <br>Lighting</h4>
+                                </div>
+                            </div>
+                            <div class="info-block">
+                                <div class="inner">
+                                    <div class="icon-box"><i class="flaticon-pool"></i></div>
+                                    <h4 class="title">The Best <br>Swiming</h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="image-column col-xl-6 col-lg-6">
+                    <div class="inner-column wow fadeInLeft">
+                        <figure class="image-1 overlay-anim wow fadeInUp"><img src="/images/resource/about1-1.jpg" alt>
+                        </figure>
+                        <figure class="image-2 overlay-anim wow fadeInLeft"><img src="/images/resource/about1-2.jpg" alt>
+                        </figure>
+                        <div class="exp-box bounce-y">
+                            <figure class=" overlay-anim wow fadeInLeft"><img src="/images/resource/exp-icon.png" alt>
+                            </figure>
+                            <h4 class="title">Luxury Room</h4>
+                            <div class="text">Donec in quis the asd <br>pellentesque velit. Donec id <br>velit arcu
+                                posuere blane.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="service-section">
+        <div class="auto-container">
+            <div class="sec-title text-center wow slideInUp">
+                <span class="sub-title">Hoexr SERVICES</span>
+                <h2>Our Facilities</h2>
+            </div>
+            <div class="row">
+
+                <div class="service-block col-lg-4 col-md-6 col-sm-12">
+                    <div class="inner-box wow fadeIn" data-wow-delay="100ms">
+                        <div class="icon-box wow fadeInUp"><i class="flaticon-bed-2"></i></div>
+                        <div class="content-box">
+                            <h4 class="title"><a>Room Service</a></h4>
+                            <div class="text">Orci varius natoque penatibus magnis ders disney parturient ridiculus
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="service-block col-lg-4 col-md-6 col-sm-12">
+                    <div class="inner-box wow fadeIn" data-wow-delay="200ms">
+                        <div class="icon-box wow fadeInUp"><i class="flaticon-travel"></i></div>
+                        <div class="content-box">
+                            <h4 class="title"><a>Pick Up & Drop</a></h4>
+                            <div class="text">Orci varius natoque penatibus magnis ders disney parturient ridiculus
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="service-block col-lg-4 col-md-6 col-sm-12">
+                    <div class="inner-box wow fadeIn" data-wow-delay="300ms">
+                        <div class="icon-box wow fadeInUp"><i class="flaticon-wifi"></i></div>
+                        <div class="content-box">
+                            <h4 class="title"><a>Fibre Internet</a></h4>
+                            <div class="text">Orci varius natoque penatibus magnis ders disney parturient ridiculus
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="service-block col-lg-4 col-md-6 col-sm-12">
+                    <div class="inner-box wow fadeIn" data-wow-delay="400ms">
+                        <div class="icon-box wow fadeInUp"><i class="flaticon-breakfast"></i></div>
+                        <div class="content-box">
+                            <h4 class="title"><a >Breakfast</a></h4>
+                            <div class="text">Orci varius natoque penatibus magnis ders disney parturient ridiculus
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="service-block col-lg-4 col-md-6 col-sm-12">
+                    <div class="inner-box wow fadeIn" data-wow-delay="500ms">
+                        <div class="icon-box wow fadeInUp"><i class="flaticon-swimming-pool"></i></div>
+                        <div class="content-box">
+                            <h4 class="title"><a>Swimming Pool</a></h4>
+                            <div class="text">Orci varius natoque penatibus magnis ders disney parturient ridiculus
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="service-block col-lg-4 col-md-6 col-sm-12">
+                    <div class="inner-box wow fadeIn" data-wow-delay="600ms">
+                        <div class="icon-box wow fadeInUp"><i class="flaticon-car"></i></div>
+                        <div class="content-box">
+                            <h4 class="title"><a>Parking Space</a></h4>
+                            <div class="text">Orci varius natoque penatibus magnis ders disney parturient ridiculus
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="feature-section">
+        <div class="auto-container">
+            <div class="row feature-row g-0 wow slideInUp" data-wow-delay="100ms">
+                <div class="image-column col-lg-4">
+                    <div class="inner-column">
+                        <div class="image-box">
+                            <figure class="image overlay-anim"><img src="/images/resource/feature-1.jpg" alt></figure>
+                        </div>
+                    </div>
+                </div>
+                <div class="content-column col-lg-8">
+                    <div class="inner-column">
+                        <div class="content-box">
+                            <div class="sec-title">
+                                <span class="sub-title">MODERN</span>
+                                <h2>Fitness Center</h2>
+                                <div class="text">Restaurant inilla duiman at elit finibus viverra nec a lacus themo the
+                                    <br>nesudea seneoice misuscipit non sagie the fermen ziverra tristiue duru <br>the
+                                    ivite dianne onen nivami acsestion augue artine.
+                                </div>
+                            </div>
+                            <figure class="image-2"><img src="/images/resource/icon.png" alt></figure>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row feature-row g-0 wow slideInUp" data-wow-delay="200ms">
+                <div class="content-column col-lg-8">
+                    <div class="inner-column">
+                        <div class="content-box">
+                            <div class="sec-title">
+                                <span class="sub-title">DISCOVER</span>
+                                <h2>The Restaurant</h2>
+                                <div class="text">Restaurant inilla duiman at elit finibus viverra nec a
+                                    lacus themo the <br>nesudea seneoice misuscipit non sagie the fermen
+                                    ziverra tristiue duru <br>the ivite dianne onen nivami acsestion augue artine.
+                                </div>
+                            </div>
+                            <figure class="image-2"><img src="/images/resource/icon-2.png" alt></figure>
+                        </div>
+                    </div>
+                </div>
+                <div class="image-column col-lg-4">
+                    <div class="inner-column">
+                        <div class="image-box">
+                            <figure class="image overlay-anim"><img src="/images/resource/feature-2.jpg" alt></figure>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row feature-row g-0 wow slideInUp" data-wow-delay="300ms">
+                <div class="image-column col-lg-4">
+                    <div class="inner-column">
+                        <div class="image-box">
+                            <figure class="image overlay-anim"><img src="/images/resource/feature-3.jpg" alt></figure>
+                        </div>
+                    </div>
+                </div>
+                <div class="content-column col-lg-8">
+                    <div class="inner-column">
+                        <div class="content-box">
+                            <div class="sec-title">
+                                <span class="sub-title">EXPERIENCES</span>
+                                <h2>Spa Center</h2>
+                                <div class="text">Restaurant inilla duiman at elit finibus viverra nec a
+                                    lacus themo the <br>nesudea seneoice misuscipit non sagie the fermen
+                                    ziverra tristiue duru <br>the ivite dianne onen nivami acsestion augue artine.
+                                </div>
+                            </div>
+                            <figure class="image-2"><img src="/images/resource/icon-3.png" alt></figure>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="booking-section">
+        <div class="auto-container">
+            <div class="row">
+                <div class="col-lg-6 booking-form-column wow fadeInUp">
+                    <div class="inner-column">
+                        <div class="sec-title">
+                            <span class="sub-title">Villa & Apartments</span>
+                            <h2>Enquiry</h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 booking-content-column wow fadeInRight" data-wow-delay="200ms">
+                    <div class="inner-column">
+                        <div class="sec-title white">
+                            <span class="sub-title">Hoexr </span>
+                            <h2>Check Availability </h2>
+                        </div>
+                        <p>Each of our guest rooms feature a private bath, wi-fi, cable television and include full
+                            breakfast.</p>
+                        <p>Mea nibh meis philosophia eu. Duis legimus efficiantur ea sea. Id placerat tacimates
+                            definitionem sea, prima quidam vim no. Duo nobis persecuti cu.</p>
+                        <div class="contact-info">
+                            <div class="icon-box"><i class="flaticon-customer-service"></i></div>
+                            <span>Customer Care</span>
+                            <h4 class="title">7340-896-847</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <%- include('../partials/footer.ejs')%>
+</div>
+
+
+<script>
+    async function ReadCity() {
+        try {
+            let response = await fetch('/read-city');
+            response = await response.json();
+
+            if(response.error) {
+                Swal.fire({
+                    icon: "error",
+                    title: "Oops...",
+                    text: response.error,
+                });
+            } else {
+                let html = `<option value="">Please Select City</option>`;
+                for (let x of response.records) {
+                    html += `<option value="${x.id}">${x.city}</option>`;
+                }
+                document.getElementById('city').innerHTML = html;
+            }
+        } catch (error) {
+            Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: "An error occurred while fetching city data.",
+            });
+        }
+    }
+
+    function Search() {
+        let checkin = document.getElementById('checkin').value;
+        let checkout = document.getElementById('checkout').value;
+        let city = document.getElementById('city').value;
+        let type = document.getElementById('Type').value;
+        localStorage.setItem("checkin", checkin);
+        localStorage.setItem("checkout", checkout);
+
+        if ($("#dateForm").valid()) {
+            // Encode data for URL parameters
+            let params = new URLSearchParams();
+            params.append('checkin', checkin);
+            params.append('checkout', checkout);
+            params.append('city', city);
+            params.append('type', type);
+
+            // Navigate to the next page with URL parameters
+            window.location.href = '/search-hotel?' + params.toString();
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+        let today = new Date();
+        let day = String(today.getDate()).padStart(2, '0');
+        let month = String(today.getMonth() + 1).padStart(2, '0'); // January is 0
+        let year = today.getFullYear();
+        let currentDate = year + '-' + month + '-' + day;
+
+        // Set the min attribute of the check-in date to today's date
+        let checkinInput = document.getElementById('checkin');
+        checkinInput.setAttribute('min', currentDate);
+
+        // Set the min attribute of the check-out date based on the selected check-in date
+        checkinInput.addEventListener('change', function() {
+            let checkinDate = this.value;
+            let checkoutInput = document.getElementById('checkout');
+            checkoutInput.setAttribute('min', checkinDate);
+        });
+    });
+</script>
+
+</body>
+</html>

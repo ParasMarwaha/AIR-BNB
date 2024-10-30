@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <%- include('../partials/headerFiles.ejs')%>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <title>Document</title>
+    <style>
+        .error{
+            color: red;
+        }
+    </style>
+</head>
+<body onload="ReadHotel()">
+<%- include('../partials/CustomerHeader')%>
+
+<section class="page-title" style="background-image: url(/images/background/page-title-bg.png);">
+    <div class="auto-container">
+        <div class="title-outer text-center">
+            <h1 class="title">Apartments & Villas</h1>
+        </div>
+    </div>
+</section>
+
+<section id="properties" class="feature-section">
+
+</section>
+<%- include('../partials/footer')%>
+
+<script>
+    async function ReadHotel(){
+        // Retrieve URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const checkin = urlParams.get('checkin');
+        const checkout = urlParams.get('checkout');
+        const city = urlParams.get('city');
+        const type = urlParams.get('type');
+
+        let response = await fetch('/get-hotel',{
+            method:'POST',
+            headers:{'Content-Type':'application/json'},
+            body:JSON.stringify({city:city,type:type,checkout:checkout,checkin:checkin})
+        })
+        response = await response.json()
+        //console.log(response)
+        if(response.error !== ""){
+            Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: (response.error),
+            });
+        }
+        else {
+            let html = ``
+
+            for (let x of response.record) {
+
+                html += `      <div class="auto-container">
+        <div class="row feature-row g-0 wow slideInUp" data-wow-delay="100ms">
+            <div class="image-column col-lg-4 col-md-12 col-sm-12">
+                <div class="inner-column">
+                    <div class="image-box">
+                        <figure class="image overlay-anim"><img src="${x.photo}" alt></figure>
+                    </div>
+                </div>
+            </div>
+            <div class="content-column col-lg-8 col-md-12 col-sm-12">
+                <div class="inner-column">
+                    <div class="content-box">
+                        <div class="sec-title">
+                            <h2><a>${x.airBnbName}</a></h2>
+                            <div class="text">
+                            <span class="sub-title">Address</span>
+                                <div>
+                                    ${x.address}
+                                </div>
+                            </div>
+                        </div>
+                        <h3><span class="sub-title"><a href='/hotel-desc/${x.prop_id}'  class="theme-btn btn-style-one read-more">Discover More</a></span></h3>
+
+
+                    </div>
+                </div>
+            </div>
+</div>
+        </div>
+`
+            }
+            document.getElementById('properties').innerHTML = html ;
+        }
+
+    }
+</script>
+</body>
+</html>

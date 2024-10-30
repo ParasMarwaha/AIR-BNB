@@ -1,0 +1,368 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <%- include('../partials/headerFiles.ejs') %>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+    <title>Document</title>
+</head>
+<body onload="Read()">
+<%- include('../partials/CustomerHeader') %>
+
+<div class="modal fade" id="summaryModal" tabindex="-1" role="dialog" aria-labelledby="summaryModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="summaryModalLabel">Reservation Summary</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="prop_id">
+                <p><strong>Check-in Date:</strong> <span id="summaryCheckin"></span></p>
+                <p><strong>Check-out Date:</strong> <span id="summaryCheckout"></span></p>
+                <p><strong>Stay Days:</strong> <span id="summaryDays"></span> x <span id="summaryPrice"></span>/night</p>
+                <p><strong>Total Amount:</strong> <span id="summaryAmount"></span></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button onclick="Pay()" type="button" class="btn btn-primary" >Book Now</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<section class="page-title" style="background-image: url(/images/background/page-title-bg.png);">
+    <div class="auto-container">
+        <div class="title-outer text-center">
+            <h1 class="title">Property Description</h1>
+        </div>
+    </div>
+</section>
+
+
+<section id="property" class="product-details">
+</section>
+
+
+<div class="container">
+    <div class="row">
+        <div class="room-details__left">
+            <div class="wrapper">
+                <div class="row justify-content-center">
+                    <div class="col-xl-12">
+                        <div class="room-details__content-right mb-40 mt-20">
+                            <div class="room-details__details-box">
+                                <div class="row">
+                                    <div class="col-6 col-md-3">
+                                        <p class="text mb-0">Room Size</p>
+                                        <h6>600Sq</h6>
+                                    </div>
+                                    <div class="col-6 col-md-3">
+                                        <p class="text mb-0">Rooms Bed</p>
+                                        <h6>2 Single Bed</h6>
+                                    </div>
+                                    <div class="col-6 col-md-3">
+                                        <p class="text mb-0">Occupancy</p>
+                                        <h6>Three Persons</h6>
+                                    </div>
+                                    <div class="col-6 col-md-3">
+                                        <p class="text mb-0">View</p>
+                                        <h6>Sea View</h6>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <h4 id="title2" style="display: block">Amenities</h4>
+                <div id="Amenity" class="row room-facility-list mb-40">
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+
+<div class="container">
+    <h3 id="title" style="display: block">Property Images</h3>
+    <div id="roomImage" class="row clearfix">
+
+    </div>
+</div>
+
+<section class="client-section pb-90">
+    <div class="bg bg-image" style="background-image: url(/images/background/3.jpg);"></div>
+    <div class="auto-container">
+        <div class="sec-title light text-center"> <span class="sub-title">What says for customer</span>
+            <h2>What Client's Say?</h2>
+        </div>
+        <div id="all-user-review" class="row">
+
+        </div>
+    </div>
+</section>
+
+
+<%- include('../partials/footer') %>
+
+<script>
+    let hotel ;
+    async function Read() {
+        let response = await fetch("/get-all-propertyData/<%= prop_id %>")
+        response = await response.json()
+        // console.log(response)
+        if (response.error !== "") {
+            Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: (response.error),
+            });
+        } else {
+            hotel = response.property[0]
+            let html = ` `
+            let record = response.property[0]
+            html += `    <div class="container pb-70">
+        <div class="row">
+            <div class="col-lg-6 col-xl-6">
+                <div class="bxslider">
+                    <div class="slider-content">
+                        <figure class="image-box"><a href="${record.photo}" class="lightbox-image" data-fancybox="gallery"><img
+                                        src="${record.photo}" alt></a></figure>
+
+                    </div>
+
+                </div>
+            </div>
+            <div class="col-lg-6 col-xl-6 product-info">
+                <div class="product-details__top">
+                    <h3 class="product-details__title">${record.airBnbName}<button onclick="Proceed(${record.prop_id})"  class="theme-btn btn-style-one offset-2">Book Now</button></h3>
+<h3 class="product-details__title"><span>${record.type}</span></h3>
+<h3><span class="m-3 color1"><i class="fa fa-rupee"></i><del>${record.price}</del></span><span><i class="fa fa-rupee m-2"></i>${record.offer}</span></h3>
+                </div>
+                <div class="product-details__reveiw">
+                    <i id="star-avg" class="fa fa-star"></i>
+                </div>
+                <div class="product-details__content">
+                    <p class="product-details__content-text1">${record.description}</p>
+                    <p class="product-details__content-text2"><strong>Address : </strong>${record.address}</p>
+
+               </div>
+
+            </div>
+        </div>
+    </div>
+
+`
+
+            document.getElementById('property').innerHTML = html;
+
+            html = ``
+            if(response.amenity.length === 0){
+                document.getElementById('title2').style.display = 'none'
+            }
+            else{
+                for (let x of response.amenity) {
+                    html += `<div class="col-sm-6 col-xl-4">
+                            <div class="list-one d-flex align-items-center me-sm-4 mb-3">
+                                <div class="icon text-theme-color1 mr-10 flex-shrink-0"><i
+                                            class="far fa-air-conditioner"></i></div>
+                                <h6 class="title m-0">${x.amenity}</h6>
+                            </div>
+                        </div>`
+                }
+            }
+            document.getElementById('Amenity').innerHTML = html;
+
+            //console.log(response.room)
+
+            html = ``
+            if(response.room.length === 0){
+                document.getElementById('title').style.display = 'none'
+            }
+            else{
+                for (let y of response.room) {
+                    html += `<div class="col-lg-3 ">
+                <figure class="image-box"><a href="${y.photo}" class="lightbox-image" data-fancybox="gallery"><img
+                     style="width: 200px;height: 200px"                   src="${y.photo}" alt></a></figure>
+            </div>`
+            }
+            }
+            document.getElementById('roomImage').innerHTML = html;
+
+            html = ``
+            for (let y of response.review) {
+                html += `<div class="client-block col-lg-4 col-sm-6">
+                <div class="inner-box wow fadeInLeft">
+                    <h4 class="title">${y.name}</h4>
+                    <div class="image-box">
+                        ${generateStars(y.rating)}
+                    </div>
+                    <div class="text">${y.feedback}</div>
+                </div>
+            </div>`
+            }
+            document.getElementById('all-user-review').innerHTML = html;
+
+
+            let x = response.avgReview[0]
+            //console.log(x.average_rating)
+            html=``
+            if(x.average_rating === null){
+                html = `5 star `
+                document.getElementById('star-avg').innerHTML = html;
+            }
+            else{
+                html = `/${x.average_rating} star`
+                document.getElementById('star-avg').innerHTML = html;
+            }
+        }
+
+    }
+
+    function generateStars(rating) {
+        let stars = '';
+        for (let i = 0; i < 5; i++) {
+            if (i < rating) {
+                stars += '<i class="fa fa-star"></i>'; // filled star
+            } else {
+                stars += '<i class="fa fa-star-o"></i>'; // empty star
+            }
+        }
+        return stars;
+    }
+
+
+    async function Proceed(id) {
+
+        let checkin = localStorage.getItem("checkin");
+        let checkout = localStorage.getItem("checkout");
+        //console.log(hotel)
+
+        let checkinDate = new Date(checkin);
+        let checkoutDate = new Date(checkout);
+        let diffTime = Math.abs(checkoutDate - checkinDate);
+        let diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+                 let pricePerNight = hotel.offer;
+                 let totalAmount = pricePerNight * diffDays;
+
+                 // Display the calculated values in the modal
+                document.getElementById('summaryCheckin').textContent = checkin;
+                document.getElementById('summaryCheckout').textContent = checkout;
+                document.getElementById('summaryDays').textContent = diffDays;
+                document.getElementById('summaryPrice').textContent = pricePerNight;
+                document.getElementById('summaryAmount').textContent = '₹' + totalAmount.toFixed(2);
+                document.getElementById('prop_id').value = id
+
+                 // Show the modal
+                 $('#summaryModal').modal('show');
+
+    }
+
+
+    async function Close(){
+        $("#summaryModal").modal('hide')
+    }
+
+    const Pay = () => {
+        // Get the total amount from the summary modal
+        let amount = parseFloat(document.getElementById("summaryAmount").textContent.replace('₹', ''));
+
+        let options = {
+            key: "rzp_test_dRWiKHS7zr2Gki", // Replace with your Razorpay API key
+            amount: amount * 100, // Amount is expected in paisa (multiply by 100 for rupees to paisa conversion)
+            name: "Air Bnb",
+            description: "Booking Payment",
+            image: "/images/logo.png", // URL of your company logo
+            handler: function (response) {
+                // Pass the response to handle Razorpay payment response
+                RazorPayResponse(response);
+            },
+            theme: {
+                color: "White",
+            },
+        };
+
+        let rzp1 = new Razorpay(options);
+        rzp1.open();
+    };
+
+    const RazorPayResponse = async (response) => {
+        if (response.razorpay_payment_id !== "") {
+            //console.log("Razorpay Payment ID:", response.razorpay_payment_id);
+            let checkinDate = localStorage.getItem("checkin");
+            let checkoutDate = localStorage.getItem("checkout");
+            let prop_id = document.getElementById('prop_id').value
+
+            let checkin = new Date(checkinDate);
+            let checkout = new Date(checkoutDate);
+            let diffTime = Math.abs(checkout - checkin);
+            let diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            let pricePerNight = hotel.offer; // Replace with your actual price per night
+            let totalAmount = pricePerNight * diffDays;
+
+
+            // Call Paid function with all details
+            Paid(response.razorpay_payment_id, prop_id,checkinDate, checkoutDate, totalAmount,diffDays);
+        }
+    };
+
+    async function Paid(paymentId, prop_id,checkinDate, checkoutDate, totalAmount,diffDays) {
+        // Here you can implement actions to finalize the booking or update the database with payment details
+        console.log("Payment ID:", paymentId);
+        console.log("Property ID:", prop_id);
+        console.log("Check-in Date:", checkinDate);
+        console.log("Check-out Date:", checkoutDate);
+        console.log("Total Amount:", totalAmount);
+        let response = await fetch('/bookings', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                paymentId: paymentId,
+                checkinDate: checkinDate,
+                checkoutDate: checkoutDate,
+                totalAmount: totalAmount,
+                prop_id: prop_id,
+                days:diffDays
+            })
+        })
+        response = await response.json()
+        //console.log(response)
+        if (response.error !== "") {
+            Swal.fire({
+                icon: "error",
+                title: response.error,
+                showConfirmButton: true,
+            });
+        } else {
+            Swal.fire({
+                icon: "success",
+                title: response.message,
+                showConfirmButton: true,
+            }).then(()=>{
+                $("#summaryModal").modal('hide')
+                window.location.href='/view-bookings';
+            })
+        }
+    }
+
+
+</script>
+
+</body>
+</html>

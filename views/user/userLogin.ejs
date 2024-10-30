@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <%- include('../partials/headerFiles.ejs')%>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+    <title>Document</title>
+    <style>
+        .error
+        {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+<%- include('../partials/header.ejs')%>
+
+<section class="page-title" style="background-image: url(images/background/page-title-bg.png);">
+    <div class="auto-container">
+        <div class="title-outer text-center">
+            <h1 class="title">Sign-In</h1>
+        </div>
+    </div>
+</section>
+
+<section class="contact-details">
+    <div class="container ">
+        <div class="row">
+            <div class="col-lg-6 offset-md-3">
+                <div class="sec-title">
+                    <h2>Login Here</h2>
+                </div>
+
+                <form id="signinform" >
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="mb-3">
+                                <input type="email" name="email" id="email" required class="form-control" placeholder="Enter Your Email">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="mb-3">
+                                <input type="password" name="password" id="password" required class="form-control" placeholder="Enter Password">
+                            </div>
+                        </div>
+                    </div>
+                    <button onclick="Signin()" type="button" class="btn btn-primary">Login</button>
+
+                    <a class="offset-7" href="/userForgotPassword">Forgot Password</a>
+
+                </form>
+
+            </div>
+
+        </div>
+    </div>
+</section>
+
+
+<%- include('../partials/footer.ejs')%>
+<script>
+    async function Signin()
+    {
+        let form = document.getElementById('signinform')
+        let formData = new FormData(form)
+        if($("#signinform").valid()) {
+            let response = await fetch('/userLogin',{
+                method:'POST',
+                body:formData
+            })
+            response = await response.json()
+            if (response.error !== "") {
+                Swal.fire({
+                    icon: "error",
+                    title: response.error,
+                    showConfirmButton: true,
+                });
+            } else {
+                Swal.fire({
+                    title: "Good job!",
+                    text: (response.message),
+                    icon: "success"
+                }).then(()=>{
+                    window.location.href = "/userDashboard"
+                })
+            }
+        }
+    }
+</script>
+</body>
+</html>
+
